@@ -44,17 +44,17 @@ public:
     float angle() const { return _angle; }
 };
 
-const Shaping getShaping(const std::u16string& string,
-                         float maxWidth,
-                         float lineHeight,
-                         float horizontalAlign,
-                         float verticalAlign,
-                         float justify,
-                         float spacing,
-                         const Point<float>& translate,
-                         float verticalHeight,
-                         const WritingModeType,
-                         BiDi& bidi,
-                         const GlyphPositions& glyphs);
+optional<Shaping> getShaping(const std::u16string& string,
+                             float maxWidth,
+                             float lineHeight,
+                             float horizontalAlign,
+                             float verticalAlign,
+                             float justify,
+                             float spacing,
+                             const Point<float>& translate,
+                             float verticalHeight,
+                             const WritingModeType,
+                             BiDi& bidi,
+                             const GlyphPositions& glyphs);
 
 } // namespace mbgl

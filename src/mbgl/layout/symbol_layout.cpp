@@ -220,7 +220,8 @@ void SymbolLayout::prepare(const GlyphPositionMap& glyphs, const IconAtlasMap& i
         auto& feature = *it;
         if (feature.geometry.empty()) continue;
 
-        std::pair<Shaping, Shaping> shapedTextOrientations;
+        optional<Shaping> horizontalShaping;
+        optional<Shaping> verticalShaping;
         optional<PositionedIcon> shapedIcon;
         GlyphPositions face;
 
@@ -230,7 +231,7 @@ void SymbolLayout::prepare(const GlyphPositionMap& glyphs, const IconAtlasMap& i
             if (glyphPositions != glyphs.end()) { // If there are no glyphs available for this feature, skip shaping
                 auto applyShaping = [&] (const std::u16string& text, WritingModeType writingMode) {
                     const float oneEm = 24.0f;
-                    const Shaping result = getShaping(
+                    return getShaping(
                         /* string */ text,
                         /* maxWidth: ems */ layout.get<SymbolPlacement>() != SymbolPlacementType::Line ?
                             layout.get<TextMaxWidth>() * oneEm : 0,
@@ -244,14 +245,12 @@ void SymbolLayout::prepare(const GlyphPositionMap& glyphs, const IconAtlasMap& i
                         /* writingMode */ writingMode,
                         /* bidirectional algorithm object */ bidi,
                         /* glyphs */ glyphPositions->second);
-
-                    return result;
                 };
 
-                shapedTextOrientations.first = applyShaping(*feature.text, WritingModeType::Horizontal);
+                horizontalShaping = applyShaping(*feature.text, WritingModeType::Horizontal);
 
                 if (util::i18n::allowsVerticalWritingMode(*feature.text) && textAlongLine) {
-                    shapedTextOrientations.second = applyShaping(util::i18n::verticalizePunctuation(*feature.text), WritingModeType::Vertical);
+                    verticalShaping = applyShaping(util::i18n::verticalizePunctuation(*feature.text), WritingModeType::Vertical);
                 }
             }
         }
@@ -278,9 +277,9 @@ void SymbolLayout::prepare(const GlyphPositionMap& glyphs, const IconAtlasMap& i
         }
 
         // if either shapedText or icon position is present, add the feature
-        if (shapedTextOrientations.first || shapedIcon) {
+        if (horizontalShaping || shapedIcon) {
             auto glyphPositionsIt = glyphs.find(layout.get<TextFont>());
-            addFeature(std::distance(features.begin(), it), feature, shapedTextOrientations, shapedIcon, glyphPositionsIt == glyphs.end() ? GlyphPositions() : glyphPositionsIt->second);
+            addFeature(std::distance(features.begin(), it), feature, horizontalShaping, verticalShaping, shapedIcon, glyphPositionsIt == glyphs.end() ? GlyphPositions() : glyphPositionsIt->second);
         }
         
         feature.geometry.clear();
@@ -291,7 +290,8 @@ void SymbolLayout::prepare(const GlyphPositionMap& glyphs, const IconAtlasMap& i
 
 void SymbolLayout::addFeature(const std::size_t index,
                               const SymbolFeature& feature,
-                              const std::pair<Shaping, Shaping>& shapedTextOrientations,
+                              optional<Shaping> horizontalShaping,
+                              optional<Shaping> verticalShaping,
                               optional<PositionedIcon> shapedIcon,
                               const GlyphPositions& glyphs) {
     const float minScale = 0.5f;
@@ -345,7 +345,7 @@ void SymbolLayout::addFeature(const std::size_t index,
 
         const bool addToBuffers = mode == MapMode::Still || withinPlus0;
 
-        symbolInstances.emplace_back(anchor, line, shapedTextOrientations, shapedIcon,
+        symbolInstances.emplace_back(anchor, line, horizontalShaping, verticalShaping, shapedIcon,
                 layout.evaluate(zoom, feature), layoutTextSize,
                 addToBuffers, symbolInstances.size(),
                 textBoxScale, textPadding, textPlacement,
@@ -361,8 +361,8 @@ void SymbolLayout::addFeature(const std::size_t index,
             Anchors anchors = getAnchors(line,
                                          symbolSpacing,
                                          textMaxAngle,
-                                         (shapedTextOrientations.second ?: shapedTextOrientations.first).left,
-                                         (shapedTextOrientations.second ?: shapedTextOrientations.first).right,
+                                         (verticalShaping ?: horizontalShaping)->left,
+                                         (verticalShaping ?: horizontalShaping)->right,
                                          (shapedIcon ? shapedIcon->left() : 0),
                                          (shapedIcon ? shapedIcon->right() : 0),
                                          glyphSize,

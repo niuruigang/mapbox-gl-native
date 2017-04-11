@@ -273,18 +273,18 @@ void shapeLines(Shaping& shaping,
     shaping.right = shaping.left + maxLineLength;
 }
 
-const Shaping getShaping(const std::u16string& logicalInput,
-                         const float maxWidth,
-                         const float lineHeight,
-                         const float horizontalAlign,
-                         const float verticalAlign,
-                         const float justify,
-                         const float spacing,
-                         const Point<float>& translate,
-                         const float verticalHeight,
-                         const WritingModeType writingMode,
-                         BiDi& bidi,
-                         const GlyphPositions& glyphs) {
+optional<Shaping> getShaping(const std::u16string& logicalInput,
+                             const float maxWidth,
+                             const float lineHeight,
+                             const float horizontalAlign,
+                             const float verticalAlign,
+                             const float justify,
+                             const float spacing,
+                             const Point<float>& translate,
+                             const float verticalHeight,
+                             const WritingModeType writingMode,
+                             BiDi& bidi,
+                             const GlyphPositions& glyphs) {
     Shaping shaping(translate.x, translate.y, writingMode);
     
     std::vector<std::u16string> reorderedLines =
@@ -293,9 +293,12 @@ const Shaping getShaping(const std::u16string& logicalInput,
     
     shapeLines(shaping, reorderedLines, spacing, lineHeight, horizontalAlign, verticalAlign,
                justify, translate, verticalHeight, writingMode, glyphs);
-    
-    return shaping;
-}
 
+    if (!shaping.positionedGlyphs.empty()) {
+        return { shaping };
+    }
+
+    return {};
+}
 
 } // namespace mbgl

@@ -14,7 +14,8 @@ class SymbolInstance {
 public:
     SymbolInstance(Anchor& anchor,
                    const GeometryCoordinates& line,
-                   const std::pair<Shaping, Shaping>& shapedTextOrientations,
+                   optional<Shaping> horizontalShaping,
+                   optional<Shaping> verticalShaping,
                    optional<PositionedIcon> shapedIcon,
                    const style::SymbolLayoutProperties::Evaluated&,
                    const float layoutTextSize,

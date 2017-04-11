@@ -54,7 +54,8 @@ public:
 private:
     void addFeature(const size_t,
                     const SymbolFeature&,
-                    const std::pair<Shaping, Shaping>& shapedTextOrientations,
+                    optional<Shaping> horizontalShaping,
+                    optional<Shaping> verticalShaping,
                     optional<PositionedIcon> shapedIcon,
                     const GlyphPositions& face);
 

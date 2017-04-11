@@ -41,12 +41,17 @@ public:
     // for text
     CollisionFeature(const GeometryCoordinates& line,
                      const Anchor& anchor,
-                     const Shaping& shapedText,
+                     optional<Shaping> shapedText,
                      const float boxScale,
                      const float padding,
                      const style::SymbolPlacementType placement,
                      const IndexedSubfeature& indexedFeature_)
-        : CollisionFeature(line, anchor, shapedText.top, shapedText.bottom, shapedText.left, shapedText.right, boxScale, padding, placement, indexedFeature_, AlignmentType::Curved) {}
+        : CollisionFeature(line, anchor,
+                           (shapedText ? shapedText->top : 0),
+                           (shapedText ? shapedText->bottom : 0),
+                           (shapedText ? shapedText->left : 0),
+                           (shapedText ? shapedText->right : 0),
+                           boxScale, padding, placement, indexedFeature_, AlignmentType::Curved) {}
 
     // for icons
     CollisionFeature(const GeometryCoordinates& line,

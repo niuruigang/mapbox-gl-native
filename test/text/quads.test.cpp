@@ -23,7 +23,7 @@ TEST(getIconQuads, normal) {
     ASSERT_TRUE(shapedIcon);
 
     GeometryCoordinates line;
-    Shaping shapedText;
+    optional<Shaping> shapedText = { Shaping {} };
 
     SymbolQuad quad =
         getIconQuad(anchor, *shapedIcon, line, layout, 16.0f, SymbolPlacementType::Point, shapedText);
@@ -56,12 +56,12 @@ TEST(getIconQuads, style) {
     ASSERT_TRUE(shapedIcon);
 
     GeometryCoordinates line;
-    Shaping shapedText;
-    shapedText.top = -10.0f;
-    shapedText.bottom = 30.0f;
-    shapedText.left = -60.0f;
-    shapedText.right = 20.0f;
-    shapedText.positionedGlyphs.emplace_back(PositionedGlyph(32, 0.0f, 0.0f, 0));
+    optional<Shaping> shapedText = { Shaping {} };
+    shapedText->top = -10.0f;
+    shapedText->bottom = 30.0f;
+    shapedText->left = -60.0f;
+    shapedText->right = 20.0f;
+    shapedText->positionedGlyphs.emplace_back(PositionedGlyph(32, 0.0f, 0.0f, 0));
 
     // none
     {

@@ -7,7 +7,8 @@ using namespace style;
 
 SymbolInstance::SymbolInstance(Anchor& anchor,
                                const GeometryCoordinates& line,
-                               const std::pair<Shaping, Shaping>& shapedTextOrientations,
+                               optional<Shaping> horizontalShaping,
+                               optional<Shaping> verticalShaping,
                                optional<PositionedIcon> shapedIcon,
                                const SymbolLayoutProperties::Evaluated& layout,
                                const float layoutTextSize,
@@ -24,34 +25,34 @@ SymbolInstance::SymbolInstance(Anchor& anchor,
                                const std::size_t featureIndex_) :
     point(anchor.point),
     index(index_),
-    hasText(shapedTextOrientations.first || shapedTextOrientations.second),
+    hasText(horizontalShaping || verticalShaping),
     hasIcon(shapedIcon),
 
     // Create the collision features that will be used to check whether this symbol instance can be placed
-    textCollisionFeature(line, anchor, shapedTextOrientations.second ?: shapedTextOrientations.first, textBoxScale, textPadding, textPlacement, indexedFeature),
+    textCollisionFeature(line, anchor, verticalShaping ?: horizontalShaping, textBoxScale, textPadding, textPlacement, indexedFeature),
     iconCollisionFeature(line, anchor, shapedIcon, iconBoxScale, iconPadding, iconPlacement, indexedFeature),
     featureIndex(featureIndex_) {
 
     // Create the quads used for rendering the icon and glyphs.
     if (addToBuffers) {
         if (shapedIcon) {
-            iconQuad = getIconQuad(anchor, *shapedIcon, line, layout, layoutTextSize, iconPlacement, shapedTextOrientations.first);
+            iconQuad = getIconQuad(anchor, *shapedIcon, line, layout, layoutTextSize, iconPlacement, horizontalShaping);
         }
-        if (shapedTextOrientations.first) {
-            auto quads = getGlyphQuads(anchor, shapedTextOrientations.first, textBoxScale, line, layout, textPlacement, face);
+        if (horizontalShaping) {
+            auto quads = getGlyphQuads(anchor, *horizontalShaping, textBoxScale, line, layout, textPlacement, face);
             glyphQuads.insert(glyphQuads.end(), quads.begin(), quads.end());
         }
-        if (shapedTextOrientations.second) {
-            auto quads = getGlyphQuads(anchor, shapedTextOrientations.second, textBoxScale, line, layout, textPlacement, face);
+        if (verticalShaping) {
+            auto quads = getGlyphQuads(anchor, *verticalShaping, textBoxScale, line, layout, textPlacement, face);
             glyphQuads.insert(glyphQuads.end(), quads.begin(), quads.end());
         }
     }
 
-    if (shapedTextOrientations.first && shapedTextOrientations.second) {
+    if (horizontalShaping && verticalShaping) {
         writingModes = WritingModeType::Horizontal | WritingModeType::Vertical;
-    } else if (shapedTextOrientations.first) {
+    } else if (horizontalShaping) {
         writingModes = WritingModeType::Horizontal;
-    } else if (shapedTextOrientations.second) {
+    } else if (verticalShaping) {
         writingModes = WritingModeType::Vertical;
     } else {
         writingModes = WritingModeType::None;

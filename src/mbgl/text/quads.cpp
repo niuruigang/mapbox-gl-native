@@ -20,8 +20,8 @@ SymbolQuad getIconQuad(const Anchor& anchor,
                        const GeometryCoordinates& line,
                        const SymbolLayoutProperties::Evaluated& layout,
                        const float layoutTextSize,
-                       const style::SymbolPlacementType placement, 
-                       const Shaping& shapedText) {
+                       const style::SymbolPlacementType placement,
+                       optional<Shaping> shapedText) {
     auto image = *shapedIcon.image();
 
     const float border = 1.0;
@@ -38,10 +38,10 @@ SymbolQuad getIconQuad(const Anchor& anchor,
         auto iconWidth = right - left;
         auto iconHeight = bottom - top;
         auto size = layoutTextSize / 24.0f;
-        auto textLeft = shapedText.left * size;
-        auto textRight = shapedText.right * size;
-        auto textTop = shapedText.top * size;
-        auto textBottom = shapedText.bottom * size;
+        auto textLeft = shapedText->left * size;
+        auto textRight = shapedText->right * size;
+        auto textTop = shapedText->top * size;
+        auto textBottom = shapedText->bottom * size;
         auto textWidth = textRight - textLeft;
         auto textHeight = textBottom - textTop;
         auto padT = layout.get<IconTextFitPadding>()[0];
@@ -92,7 +92,7 @@ SymbolQuad getIconQuad(const Anchor& anchor,
         br = util::matrixMultiply(matrix, br);
     }
 
-    return SymbolQuad { tl, tr, bl, br, image.pos, 0, 0, anchor.point, globalMinScale, std::numeric_limits<float>::infinity(), shapedText.writingMode };
+    return SymbolQuad { tl, tr, bl, br, image.pos, 0, 0, anchor.point, globalMinScale, std::numeric_limits<float>::infinity(), shapedText->writingMode };
 }
 
 struct GlyphInstance {

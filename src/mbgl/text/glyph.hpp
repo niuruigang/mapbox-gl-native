@@ -66,13 +66,14 @@ public:
     float angle = 0;
 };
 
-enum class WritingModeType : uint8_t;
+enum class WritingModeType : uint8_t {
+    None = 0,
+    Horizontal = 1 << 0,
+    Vertical = 1 << 1,
+};
 
 class Shaping {
-    public:
-    explicit Shaping() : top(0), bottom(0), left(0), right(0) {}
-    explicit Shaping(float x, float y, WritingModeType writingMode_)
-        : top(y), bottom(y), left(x), right(x), writingMode(writingMode_) {}
+public:
     std::vector<PositionedGlyph> positionedGlyphs;
     int32_t top;
     int32_t bottom;
@@ -80,13 +81,8 @@ class Shaping {
     int32_t right;
     WritingModeType writingMode;
 
-    explicit operator bool() const { return !positionedGlyphs.empty(); }
-};
-
-enum class WritingModeType : uint8_t {
-    None = 0,
-    Horizontal = 1 << 0,
-    Vertical = 1 << 1,
+    explicit Shaping(float x = 0, float y = 0, WritingModeType writingMode_ = WritingModeType::None)
+        : top(y), bottom(y), left(x), right(x), writingMode(writingMode_) {}
 };
 
 constexpr WritingModeType operator|(WritingModeType a, WritingModeType b) {
