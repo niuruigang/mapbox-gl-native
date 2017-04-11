@@ -83,6 +83,21 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(layer.getVisibility().getValue(), NONE);
   }
 
+  @Test
+  public void testSourceLayer() {
+    checkViewIsDisplayed(R.id.mapView);
+    Timber.i("Visibility");
+    assertNotNull(layer);
+
+    // Get initial
+    assertEquals(layer.getSourceLayer(), "composite");
+
+    // Set
+    final String sourceLayer = "test";
+    layer.setSourceLayer(sourceLayer);
+    assertEquals(layer.getSourceLayer(), sourceLayer);
+  }
+
 
   @Test
   public void testSymbolPlacementAsConstant() {
@@ -381,7 +396,6 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(1, ((ExponentialStops) layer.getIconSize().getFunction().getStops()).size());
   }
 
-
   @Test
   public void testIconSizeAsIdentitySourceFunction() {
     checkViewIsDisplayed(R.id.mapView);
@@ -489,6 +503,7 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(0.3f, stop.in.value, 0.001f);
     assertEquals(0.9f, stop.out, 0.001f);
   }
+
 
   @Test
   public void testIconTextFitAsConstant() {
@@ -601,7 +616,6 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(1, ((IntervalStops) layer.getIconImage().getFunction().getStops()).size());
   }
 
-
   @Test
   public void testIconImageAsIdentitySourceFunction() {
     checkViewIsDisplayed(R.id.mapView);
@@ -646,6 +660,7 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals("FeaturePropertyA", ((SourceFunction) layer.getIconImage().getFunction()).getProperty());
     assertEquals(IntervalStops.class, layer.getIconImage().getFunction().getStops().getClass());
   }
+
 
   @Test
   public void testIconRotateAsConstant() {
@@ -1181,7 +1196,6 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(1, ((ExponentialStops) layer.getTextSize().getFunction().getStops()).size());
   }
 
-
   @Test
   public void testTextSizeAsIdentitySourceFunction() {
     checkViewIsDisplayed(R.id.mapView);
@@ -1289,6 +1303,7 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(0.3f, stop.in.value, 0.001f);
     assertEquals(0.9f, stop.out, 0.001f);
   }
+
 
   @Test
   public void testTextMaxWidthAsConstant() {
@@ -1553,7 +1568,6 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(1, ((ExponentialStops) layer.getTextRotate().getFunction().getStops()).size());
   }
 
-
   @Test
   public void testTextRotateAsIdentitySourceFunction() {
     checkViewIsDisplayed(R.id.mapView);
@@ -1661,6 +1675,7 @@ public class SymbolLayerTest extends BaseStyleTest {
     assertEquals(0.3f, stop.in.value, 0.001f);
     assertEquals(0.9f, stop.out, 0.001f);
   }
+
 
   @Test
   public void testTextPaddingAsConstant() {

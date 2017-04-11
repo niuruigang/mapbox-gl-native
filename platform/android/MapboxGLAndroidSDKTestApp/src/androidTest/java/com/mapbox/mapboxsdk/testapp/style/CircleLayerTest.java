@@ -84,6 +84,21 @@ public class CircleLayerTest extends BaseStyleTest {
   }
 
   @Test
+  public void testSourceLayer() {
+    checkViewIsDisplayed(R.id.mapView);
+    Timber.i("Visibility");
+    assertNotNull(layer);
+
+    // Get initial
+    assertEquals(layer.getSourceLayer(), "composite");
+
+    // Set
+    final String sourceLayer = "test";
+    layer.setSourceLayer(sourceLayer);
+    assertEquals(layer.getSourceLayer(), sourceLayer);
+  }
+
+  @Test
   public void testCircleRadiusTransition() {
     checkViewIsDisplayed(R.id.mapView);
     Timber.i("circle-radiusTransitionOptions");

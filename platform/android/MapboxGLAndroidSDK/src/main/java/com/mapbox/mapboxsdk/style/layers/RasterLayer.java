@@ -58,7 +58,6 @@ public class RasterLayer extends Layer {
     setSourceLayer(sourceLayer);
     return this;
   }
-
   /**
    * Set a property or properties.
    *
