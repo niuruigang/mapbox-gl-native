@@ -13,6 +13,7 @@
 * Fixed an issue causing attribution button text to appear blue instead of black. ([#8701](https://github.com/mapbox/mapbox-gl-native/pull/8701))
 * Fixed a crash or console spew when MGLMapView is initialized with a frame smaller than 64 points wide by 64 points tall. ([#8562](https://github.com/mapbox/mapbox-gl-native/pull/8562))
 * The error passed into `-[MGLMapViewDelegate mapViewDidFailLoadingMap:withError:]` now includes a more specific description and failure reason. ([#8418](https://github.com/mapbox/mapbox-gl-native/pull/8418))
+* Added more Swift integration test coverage to help ensure that the effects of subtle SDK changes to Swift bridging are understood and captured in future release notes. ([#8729](https://github.com/mapbox/mapbox-gl-native/pull/8729))
 
 ## 0.4.1 - April 8, 2017
 
