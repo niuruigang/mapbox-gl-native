@@ -1274,7 +1274,6 @@ public:
         }
 
         [self notifyGestureDidEndWithDrift:drift];
-        [self notifyScaleBarGestureDidEnd];
 
         // metrics: pan end
         CGPoint pointInView = CGPointMake([pan locationInView:pan.view].x, [pan locationInView:pan.view].y);
@@ -1385,7 +1384,6 @@ public:
 
         [self notifyGestureDidEndWithDrift:drift];
         [self unrotateIfNeededForGesture];
-        [self notifyScaleBarGestureDidEnd];
     }
 
     _previousPinchCenterCoordinate = [self convertPoint:centerPoint toCoordinateFromView:self];
@@ -1466,7 +1464,6 @@ public:
         else
         {
             [self notifyGestureDidEndWithDrift:NO];
-            [self notifyScaleBarGestureDidEnd];
             [self unrotateIfNeededForGesture];
         }
     }
@@ -1604,11 +1601,9 @@ public:
             [self animateWithDelay:MGLAnimationDuration animations:^
              {
                  [weakSelf unrotateIfNeededForGesture];
-                 [weakSelf notifyScaleBarGestureDidEnd];
              }];
         } else {
             [self unrotateIfNeededForGesture];
-            [self notifyScaleBarGestureDidEnd];
         }
     }
 }
@@ -1646,7 +1641,6 @@ public:
             [self animateWithDelay:MGLAnimationDuration animations:^
              {
                  [weakSelf unrotateIfNeededForGesture];
-                 [weakSelf notifyScaleBarGestureDidEnd];
              }];
         }
     }
@@ -1698,7 +1692,6 @@ public:
     else if (quickZoom.state == UIGestureRecognizerStateEnded || quickZoom.state == UIGestureRecognizerStateCancelled)
     {
         [self notifyGestureDidEndWithDrift:NO];
-        [self notifyScaleBarGestureDidEnd];
         [self unrotateIfNeededForGesture];
     }
 }
@@ -1738,7 +1731,6 @@ public:
     else if (twoFingerDrag.state == UIGestureRecognizerStateEnded || twoFingerDrag.state == UIGestureRecognizerStateCancelled)
     {
         [self notifyGestureDidEndWithDrift:NO];
-        [self notifyScaleBarGestureDidEnd];
         [self unrotateIfNeededForGesture];
     }
 
@@ -5203,11 +5195,6 @@ public:
     }
 
     return center;
-}
-
-- (void)notifyScaleBarGestureDidEnd
-{
-    [(MGLScaleBar *)self.scaleBar fadeOut];
 }
 
 - (void)updateCompass

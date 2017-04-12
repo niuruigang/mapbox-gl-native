@@ -156,7 +156,7 @@ typedef NS_ENUM(NSInteger, MBXSettingsMiscellaneousRows) {
     [self restoreState:nil];
 
     self.debugLoggingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"MGLMapboxMetricsDebugLoggingEnabled"];
-
+    self.mapView.scaleBar.hidden = NO;
     self.hudLabel.hidden = YES;
 
     if ([MGLAccountManager accessToken].length)
