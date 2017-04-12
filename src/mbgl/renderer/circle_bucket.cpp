@@ -5,6 +5,7 @@
 #include <mbgl/style/layers/circle_layer.hpp>
 #include <mbgl/style/layers/circle_layer_impl.hpp>
 #include <mbgl/util/constants.hpp>
+#include <mbgl/util/math.hpp>
 
 namespace mbgl {
 
@@ -95,6 +96,27 @@ void CircleBucket::addFeature(const GeometryTileFeature& feature,
     for (auto& pair : paintPropertyBinders) {
         pair.second.populateVertexVectors(feature, vertices.vertexSize());
     }
+}
+
+float CircleBucket::getQueryRadius(const style::Layer& layer) const {
+    if (!layer.is<CircleLayer>()) {
+        return 0;
+    }
+
+    auto paint = layer.as<CircleLayer>()->impl->paint;
+
+    // Get the (max/default) radius
+    float radius;
+    auto it = paintPropertyBinders.find(layer.getID());
+    if (it == paintPropertyBinders.end()) {
+        // XXX: Is there actually a case where it wouldn't be in the statistics?
+        radius = paint.evaluated.get<CircleRadius>().constantOr(CircleRadius::defaultValue());
+    } else {
+        radius = it->second.statistics.max<CircleRadius>();
+    }
+
+    auto translate = paint.evaluated.get<CircleTranslate>();
+    return radius + util::length(translate[0], translate[1]);
 }
 
 } // namespace mbgl
